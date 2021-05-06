@@ -1,7 +1,7 @@
 const express = require("express");
 const { createApolloServer } = require("./src/server");
 
-const main = (port) => {
+const main = () => {
   const app = express();
   const apolloServer = createApolloServer();
 
