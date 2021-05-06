@@ -26,4 +26,6 @@ class SimplyRetsAPI extends RESTDataSource {
 
 module.exports = {
   SimplyRetsAPI,
+  SIMPLY_RETS_URL,
+  GET_PROPERTIES_URL,
 };
