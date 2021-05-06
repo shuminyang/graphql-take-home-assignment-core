@@ -1,5 +1,7 @@
-const getProperties = async (_, __, { dataSources }) => {
-  return await dataSources.simplyRetsAPI.getPropertiesByCity();
+const getProperties = async (_, args, { dataSources }) => {
+  const { city } = args;
+
+  return await dataSources.simplyRetsAPI.getPropertiesByCity(city);
 };
 
 module.exports = {

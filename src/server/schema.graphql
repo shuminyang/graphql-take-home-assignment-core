@@ -165,5 +165,5 @@ type Property {
 }
 
 type Query {
-  getProperties: [Listing!]
+  getProperties(city: String!): [Listing!]
 }
