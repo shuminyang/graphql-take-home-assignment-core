@@ -7,4 +7,5 @@ module.exports = {
   collectCoverageFrom: ["src/**/*.js"],
   coverageDirectory: "./coverage",
   testEnvironment: "node",
+  setupFiles: ["<rootDir>/__testUtils.js"],
 };

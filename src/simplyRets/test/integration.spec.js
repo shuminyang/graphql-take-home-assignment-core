@@ -1,5 +1,3 @@
-const { createApolloServer } = require("../../server");
-const express = require("express");
 const supertest = require("supertest");
 const nock = require("nock");
 const faker = require("faker");
@@ -33,15 +31,25 @@ const QUERY = `{
 }`;
 
 describe("Integration test", () => {
+  it("should return unauthorized if authorization has not been sent", async () => {
+    const app = createTestServer();
+
+    const res = supertest(app).post("/graphql").send({ query: QUERY });
+
+    await res.then((res) => {
+      expect(res.status).toBe(400);
+      expect(res.body.errors).toBeDefined();
+      expect(res.body.errors[0].extensions.code).toBe("UNAUTHENTICATED");
+    });
+  });
+
   it("should return valid response", async () => {
     nock(SIMPLY_RETS_URL)
       .get(GET_PROPERTIES_URL)
       .query({ q: MOCK_CITY })
       .reply(200, VALID_RESPONSE);
 
-    const app = express();
-    const apollo = createApolloServer();
-    apollo.applyMiddleware({ app });
+    const app = createTestServer();
 
     const res = supertest(app)
       .post("/graphql")
