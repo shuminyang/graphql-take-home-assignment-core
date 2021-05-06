@@ -1,3 +1,10 @@
+  
+# ------------------------------------------------------
+# Even though there was a file called types/index.js that 
+# contained all types from SimplyRets, I decided to create a
+# .graphql because my sintax highlighting wasn't working on that file.
+# ------------------------------------------------------
+
 type Listing {
   favoriteCount: Int
   privateRemarks: String
