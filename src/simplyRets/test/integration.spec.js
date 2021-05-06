@@ -30,11 +30,15 @@ const QUERY = `{
   }
 }`;
 
+const setupSupertest = (app) => {
+  return supertest(app).post("/graphql").send({ query: QUERY });
+};
+
 describe("Integration test", () => {
   it("should return unauthorized if authorization has not been sent", async () => {
     const app = createTestServer();
 
-    const res = supertest(app).post("/graphql").send({ query: QUERY });
+    const res = setupSupertest(app);
 
     await res.then((res) => {
       expect(res.status).toBe(400);
@@ -50,16 +54,31 @@ describe("Integration test", () => {
       .reply(200, VALID_RESPONSE);
 
     const app = createTestServer();
-
-    const res = supertest(app)
-      .post("/graphql")
-      .send({ query: QUERY })
-      .set({ authorization: "bearer 676cfd34-e706-4cce-87ca-97f947c43bd4" });
+    const res = setupSupertest(app).set({
+      authorization: "bearer 676cfd34-e706-4cce-87ca-97f947c43bd4",
+    });
 
     await res.then((res) => {
       expect(res.status).toBe(200);
       expect(res.body.data.getProperties).toBeDefined();
       expect(res.body.data.getProperties).toMatchObject(VALID_RESPONSE);
+    });
+  });
+
+  it("should return null if API fails", async () => {
+    nock(SIMPLY_RETS_URL)
+      .get(GET_PROPERTIES_URL)
+      .query({ q: MOCK_CITY })
+      .replyWithError("Error");
+
+    const app = createTestServer();
+    const res = setupSupertest(app).set({
+      authorization: "bearer 676cfd34-e706-4cce-87ca-97f947c43bd4",
+    });
+
+    await res.then((res) => {
+      expect(res.status).toBe(200);
+      expect(res.body.data.getProperties).toBeNull();
     });
   });
 });
